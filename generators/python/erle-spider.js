@@ -72,61 +72,11 @@ Blockly.Python['spider_standup_down'] = function(block) {
 	return code;
 };
 
-// Blockly.Python['spider_sitdown'] = function(block) {  
-// 	var code = ""
-// 	code+="import sys\n"
-// 	code+="import time\n"
-// 	code+="from crab_msgs.msg import *\n"
-// 	code+="from sensor_msgs.msg import Joy\n"
-// 	code+="\n"	 
-// 	code+="standup_time=20\n"
-// 	code+="\n"
-// 	code+="################\n"
-// 	code+="## INITIALIZE ##\n"
-// 	code+="################ \n"
-// 	code+="pub = rospy.Publisher('/joy', Joy, queue_size=10)\n"
-// 	code+="msg = Joy()\n"
-// 	code+="msg.header.stamp = rospy.Time.now()\n"
-// 	code+="rate = rospy.Rate(10)\n"
-// 	code+="\n"	 
-// 	code+="valueAxe = 0.0\n"
-// 	code+="valueButton = 0\n"
-// 	code+="for i in range (0, 20):\n"
-// 	code+="	msg.axes.append(valueAxe)\n"
-// 	code+="for e in range (0, 17):\n"
-// 	code+="	msg.buttons.append(valueButton)\n"
-// 	code+="\n"
-// 	// code+="time.sleep(1)\n"
-// 	code+="\n"
-// 	code+="####################\n"
-// 	code+="## SIT DOWN 	  ##\n"
-// 	code+="####################\n"
-// 	code+="msg.buttons[3] = 1\n"
-// 	code+="i=0\n"
-// 	code+="bo=True\n"
-// 	code+="sitdown_time=standup_time/3\n"
-// 	code+="while not rospy.is_shutdown() and bo:\n"
-// 	code+="	i=i+1\n"
-// 	code+="	if (i > sitdown_time):\n"
-// 	code+="	  bo=False\n"
-// 	code+="	  msg.buttons[3] = 0\n"
-// 	code+="	pub.publish(msg)\n"
-// 	code+="	rate.sleep()\n"
-// 	code+="time.sleep(2)\n"	
-// 	return code;
-// };
-
 
 Blockly.Python['spider_forward'] = function(block) {
 	var text_forward_secs = block.getFieldValue('FORWARD_SECS');
 
-	// code+="import time\n"
-	// code+="\n"
-	// code+="pub = rospy.Publisher('rosimple', String, queue_size=10)\n"
-	code+="time.sleep(1)\n"
-	// code+="pub.publish('Spider going forward for "+text_forward_secs.toString()+" seconds')\n"
-
-	var code = ""
+    var code = ""
 	code+="import sys\n"
 	code+="import time\n"
 	code+="from crab_msgs.msg import *\n"
@@ -237,8 +187,6 @@ Blockly.Python['spider_right'] = function(block) {
 	code+="	msg.axes.append(valueAxe)\n"
 	code+="for e in range (0, 17):\n"
 	code+="	msg.buttons.append(valueButton)\n"
-	code+="\n"
-	// code+="time.sleep(1)\n"
 	code+="\n"
 
 	code+="#################\n"

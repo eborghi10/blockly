@@ -45,18 +45,6 @@ Blockly.Blocks['spider_standup_down'] = {
   }
 };
 
-// Blockly.Blocks['spider_sitdown'] = {
-//   init: function() {
-//     this.appendDummyInput()
-//         .appendField("Sit down");
-//     this.setPreviousStatement(true);
-//     this.setNextStatement(true);
-//     this.setColour(260);
-//     this.setTooltip('');
-//     this.setHelpUrl('http://www.erlerobotics.com/');
-//   }
-// };
-
 Blockly.Blocks['spider_forward'] = {
   init: function() {
     this.appendDummyInput()

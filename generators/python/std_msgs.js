@@ -27,16 +27,11 @@ goog.provide('Blockly.Python.std_msgs');
 goog.require('Blockly.Python');
 
 Blockly.Python['std_msgs_empty'] = function(block) {
-  // var code = 'print "standing up..."\n';
   var code = ""
   code+="import sys\n"
   code+="import time\n"
   code+="from std_msgs.msg import Empty\n"
   code+="\n"
-  code+="################\n"
-  code+="## INITIALIZE ##\n"
-  code+="################ \n"
-  /** TODO(lucasw) Need to have the the block proved a name parameter */
   code+="pub = rospy.Publisher('/empty', Empty, queue_size=10)\n"
   code+="msg = Empty()\n"
   code+="i = 0\n"
