@@ -168,10 +168,7 @@ class Gen_compressed(threading.Thread):
   def run(self):
     self.gen_core()
     self.gen_blocks()
-    self.gen_generator("javascript")
     self.gen_generator("python")
-    self.gen_generator("php")
-    self.gen_generator("dart")
 
   def gen_core(self):
     target_filename = "blockly_compressed.js"
@@ -255,14 +252,19 @@ class Gen_compressed(threading.Thread):
   def do_compile(self, params, target_filename, filenames, remove):
     # Send the request to Google.
     headers = {"Content-type": "application/x-www-form-urlencoded"}
-    conn = httplib.HTTPConnection("closure-compiler.appspot.com")
+    conn = httplib.HTTPSConnection("closure-compiler.appspot.com")
     conn.request("POST", "/compile", urllib.urlencode(params), headers)
     response = conn.getresponse()
     json_str = response.read()
     conn.close()
 
     # Parse the JSON response.
-    json_data = json.loads(json_str)
+    try:
+        json_data = json.loads(json_str)
+    except ValueError:
+        print("ERROR: Could not parse JSON for %s.  Raw data:" % target_filename)
+        print(json_str)
+        return
 
     def file_lookup(name):
       if not name.startswith("Input_"):

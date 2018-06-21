@@ -32,16 +32,22 @@ goog.require('Blockly.Blocks');
  */
 Blockly.Blocks.std_msgs.HUE = 260;
 
-
+// https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#uw4ou6
 Blockly.Blocks['std_msgs_empty'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField("Empty");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(260);
-    this.setTooltip('Publish an Empty');
-    this.setHelpUrl('http://lucasw.github.io/');
-  }
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Empty")
+            .appendField(new Blockly.FieldTextInput("empty"), "TOPIC_NAME")
+            .appendField(new Blockly.FieldTextInput("1"), "NUMBER_OF_MESSAGES")
+            .appendField("messages")
+            .appendField("for")
+            .appendField(new Blockly.FieldTextInput("10"), "FREQUENCY")
+            .appendField("Hz");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(Blockly.Blocks.std_msgs.HUE);
+    this.setTooltip("Send an Empty std_msg");
+    this.setHelpUrl("http://docs.ros.org/api/std_msgs/html/msg/Empty.html");
+    }
 };
-

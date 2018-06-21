@@ -26,21 +26,22 @@
 goog.provide('Blockly.Python.std_msgs');
 goog.require('Blockly.Python');
 
+
 Blockly.Python['std_msgs_empty'] = function(block) {
+  var topic_name = block.getFieldValue('TOPIC_NAME');
+  var number_of_messages = block.getFieldValue('NUMBER_OF_MESSAGES');
+  var frequency = block.getFieldValue('FREQUENCY');
   var code = ""
   code+="import sys\n"
   code+="import time\n"
   code+="from std_msgs.msg import Empty\n"
   code+="\n"
-  code+="pub = rospy.Publisher('/empty', Empty, queue_size=10)\n"
+  code+="pub = rospy.Publisher('/" + topic_name + "', Empty, queue_size=10)\n"
   code+="msg = Empty()\n"
   code+="i = 0\n"
-  code+="rate = rospy.Rate(10)\n"
+  code+="rate = rospy.Rate(" + frequency +")\n"
   code+="\n"
-  code+="####################\n"
-  code+="## EMPTY          ##\n"
-  code+="####################\n"
-  code+="while not rospy.is_shutdown() and i < 10:\n"
+  code+="while not rospy.is_shutdown() and i < " + number_of_messages + ":\n"
   code+="  pub.publish(msg)\n"
   code+="  rate.sleep()\n"
   code+="  i += 1\n"
