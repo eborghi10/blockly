@@ -19,43 +19,35 @@ Blockly.Blocks['geometry_msgs_vector3'] = {
       this.appendDummyInput()
           .appendField("Vector3")
           .appendField("x")
-          .appendField(new Blockly.FieldTextInput("0"), "X")
+          .appendField(new Blockly.FieldTextInput("0"), "x")
           .appendField("y")
-          .appendField(new Blockly.FieldTextInput("0"), "Y")
+          .appendField(new Blockly.FieldTextInput("0"), "y")
           .appendField("z")
-          .appendField(new Blockly.FieldTextInput("0"), "Z");
+          .appendField(new Blockly.FieldTextInput("0"), "z");
       this.setOutput(true, "geometry_msgs/Vector3");
       this.setColour(Blockly.Blocks.geometry_msgs.HUE);
-   this.setTooltip("Generate a Vector3 geometry_msgs");
+   this.setTooltip("Generate a geometry_msg/Vector3 message");
    this.setHelpUrl("http://docs.ros.org/api/geometry_msgs/html/msg/Vector3.html");
     }
 };
 
-// https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#tdf77r
+// https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#zpq4ow
 Blockly.Blocks['geometry_msgs_twist'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Twist")
-          .appendField(new Blockly.FieldTextInput("cmd_vel"), "TOPIC_NAME")
-        //   .appendField(new Blockly.FieldNumber(1, 0, Infinity, 1), "NUMBER_OF_MESSAGES")
-          .appendField(new Blockly.FieldTextInput("1"), "NUMBER_OF_MESSAGES")
-          .appendField("messages")
-          .appendField("for")
-        //   .appendField(new Blockly.FieldNumber(10, 0, 100, 1), "FREQUENCY")
-          .appendField(new Blockly.FieldTextInput("10"), "FREQUENCY")
-          .appendField("Hz");
-      this.appendValueInput("Linear")
-          .setCheck("geometry_msgs/Vector3")
-          .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Linear");
-      this.appendValueInput("Angular")
-          .setCheck("geometry_msgs/Vector3")
-          .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Angular");
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour(Blockly.Blocks.geometry_msgs.HUE);
-   this.setTooltip("");
-   this.setHelpUrl("");
+        .appendField("Twist");
+    this.appendValueInput("linear")
+        .setCheck("geometry_msgs/Vector3")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("linear");
+    this.appendValueInput("angular")
+        .setCheck("geometry_msgs/Vector3")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("angular");
+    this.setInputsInline(false);
+    this.setOutput(true, "geometry_msgs/Twist");
+    this.setColour(230);
+ this.setTooltip("Generate a geometry_msgs/Twist message");
+ this.setHelpUrl("http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html");
     }
 };
