@@ -29,7 +29,8 @@ Blockly.Python['ros_node'] = function(block) {
   code += "\n"
   code += "while not rospy.is_shutdown:\n"
   for (var i = 0; i < usages.length; i++) {
-    code += "\t" + usages;
+    // code += "\t" + usages[i];
+    code += usages[i];
   }
   code += "\trospy.spin()\n"
   // code += "time.sleep(2)\n"
