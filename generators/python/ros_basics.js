@@ -9,30 +9,29 @@ goog.require('Blockly.Python');
 
 Blockly.Python['ros_node'] = function(block) {
   var node_name = block.getFieldValue('node_name');
-  var statements = Blockly.Python.statementToCode(block, 'ros_node').split(Blockly.Python.STRING_DELIMITER);
+  var statements_raw = Blockly.Python.statementToCode(block, 'ros_node');
+  var statements = statements_raw.split(Blockly.Python.STR_DELIMITER);
 
   var libs = statements.filter(function(element, index) {return (index % 3 === 1 && element.length > 1);});
   var setups = statements.filter(function(element, index) {return (index % 3 === 2 && element.length > 1);});
   var usages = statements.filter(function(element, index) {return (index % 3 === 0 && element.length > 1);});
 
-  var code = "import rospy\n"
+  var code = "import sys\n"
+  code += "import time\n"
+  code += "import rospy\n"
   for (var i = 0; i < libs.length; i++) {
-    code += libs[i];
+    code += libs[i].replace(/^\s+/g, '').split(Blockly.Python.STR_NEW_LINE).join('\n').split(Blockly.Python.STR_TAB).join('  ');
   }
-  // code += "import sys\n"
-  // code += "import time\n"
   code += "\n"
-  code += "rospy.init_node('" + node_name + "', anonymous=True)\n"
+  // code += "rospy.init_node('" + node_name + "', anonymous=True)\n"
   for (var i = 0; i < setups.length; i++) {
-    code += setups[i];
+    code += setups[i].replace(/^\s+/g, '').split(Blockly.Python.STR_NEW_LINE).join('\n').split(Blockly.Python.STR_TAB).join('  ');
   }
   code += "\n"
-  code += "while not rospy.is_shutdown:\n"
+  code += "while not rospy.is_shutdown():\n"
   for (var i = 0; i < usages.length; i++) {
-    // code += "\t" + usages[i];
-    code += usages[i];
+    code += '  ' + usages[i].replace(/^\s+/g, '').split(Blockly.Python.STR_NEW_LINE).join('\n  ').split(Blockly.Python.STR_TAB).join('  ');
   }
-  code += "\trospy.spin()\n"
   // code += "time.sleep(2)\n"
 
   return code;
@@ -40,7 +39,8 @@ Blockly.Python['ros_node'] = function(block) {
 
 function processROSMessages(message) {
   // Splitting incoming message
-  message = message.split(Blockly.Python.STRING_DELIMITER);
+  message = message.split(Blockly.Python.STR_DELIMITER);
+
   // Separating message
   var msg = message.pop();
   var pkgs = message.filter(function(element, index) {return (index % 2 === 0);});
@@ -54,7 +54,7 @@ function processROSMessages(message) {
 }
 
 Blockly.Python['ros_publisher'] = function(block) {
-  var topic_name = block.getFieldValue('TOPIC_NAME');
+  var topic_name_raw = block.getFieldValue('TOPIC_NAME');
   var number_of_messages = block.getFieldValue('NUMBER_OF_MESSAGES');
   var frequency = block.getFieldValue('FREQUENCY');
   var message = Blockly.Python.valueToCode(block, 'message', Blockly.Python.ORDER_ATOMIC);
@@ -67,9 +67,11 @@ Blockly.Python['ros_publisher'] = function(block) {
 
   var libs = ""
   for (var i = 0; i < pkgs.length; i++) {
-    libs += "from " + pkgs[i] + ".msg import " + msg_types[i] + "\n"
+    libs += "from " + pkgs[i] + ".msg import " + msg_types[i] + Blockly.Python.STR_NEW_LINE
   }
 
+  // Use a renamed "topic_name_raw"
+  var topic_name = topic_name_raw.replace("/", "_");
   // The variables have appended the "topic_name" in order to use, in the same
   // code, multiple instances of the publisher.
   var pub_var = "pub_" + topic_name;
@@ -77,22 +79,23 @@ Blockly.Python['ros_publisher'] = function(block) {
   var i_var = "i_" + topic_name;
   var rate_var = "rate_" + topic_name;
 
-  var setup = pub_var + " = rospy.Publisher('/" + topic_name + "', " + msg_types.pop() + ", queue_size=10)\n"
-  setup += msg_var + " = " + msg + "\n"
-  setup += i_var + " = 0\n"
-  setup += rate_var + " = rospy.Rate(" + frequency +")\n"
-  setup += Blockly.Python.STRING_DELIMITER;
+  var setup = pub_var + " = rospy.Publisher('/" + topic_name_raw + "', " + msg_types.pop() + ", queue_size=10)" + Blockly.Python.STR_NEW_LINE
+  setup += msg_var + " = " + msg + Blockly.Python.STR_NEW_LINE
+  setup += i_var + " = 0" + Blockly.Python.STR_NEW_LINE
+  setup += rate_var + " = rospy.Rate(" + frequency +")" + Blockly.Python.STR_NEW_LINE
+  setup += Blockly.Python.STR_DELIMITER;
 
-  var usage = "if " + i_var + " < " + number_of_messages + ":\n"
-  usage += "\t" + pub_var + ".publish(" + msg_var + ")\n"
-  usage += "\t" + rate_var + ".sleep()\n"
-  usage += "\t" + i_var + " += 1\n"
+  var usage = "if " + i_var + " < " + number_of_messages + ":" + Blockly.Python.STR_NEW_LINE
+  usage += Blockly.Python.STR_TAB + pub_var + ".publish(" + msg_var + ")" + Blockly.Python.STR_NEW_LINE
+  usage += Blockly.Python.STR_TAB + rate_var + ".sleep()" + Blockly.Python.STR_NEW_LINE
+  usage += Blockly.Python.STR_TAB + i_var + " += 1" + Blockly.Python.STR_NEW_LINE
 
-  return [usage, libs, setup].join(Blockly.Python.STRING_DELIMITER);
+  var code = [usage, libs, setup].join(Blockly.Python.STR_DELIMITER);
+  return code;
 };
 
 Blockly.Python['ros_subscriber'] = function(block) {
-  var topic_name = block.getFieldValue('topic_name');
+  var topic_name_raw = block.getFieldValue('topic_name');
   var message = Blockly.Python.valueToCode(block, 'message', Blockly.Python.ORDER_ATOMIC);
 
   // Get ROS message
@@ -101,24 +104,28 @@ Blockly.Python['ros_subscriber'] = function(block) {
   var pkgs = message[1];
   var msg_types = message[2];
 
+  // Use a renamed "topic_name_raw"
+  var topic_name = topic_name_raw.replace("/", "_");
   // Generate variable names
   var callback_var = "callback_" + topic_name;
   var msg_var = "msg_" + topic_name;
 
   var libs = ""
   for (var i = 0; i < pkgs.length; i++) {
-    libs += "from " + pkgs[i] + ".msg import " + msg_types[i] + "\n"
+    libs += "from " + pkgs[i] + ".msg import " + msg_types[i] + Blockly.Python.STR_NEW_LINE
   }
-  libs += "\n"
-  libs += "def " + callback_var + "(msg):\n"
-  libs += "\t" + msg_var + " = msg\n"
+  libs += Blockly.Python.STR_NEW_LINE
+  libs += "def " + callback_var + "(msg):" + Blockly.Python.STR_NEW_LINE
+  libs += Blockly.Python.STR_TAB + msg_var + " = msg" + Blockly.Python.STR_NEW_LINE
 
-  var setup = "rospy.Subscriber('" + topic_name + "', " + msg_types.pop() + ", " + callback_var + ")\n";
-  setup += Blockly.Python.STRING_DELIMITER;
+  var setup = "rospy.Subscriber('" + topic_name_raw + "', " + msg_types.pop() + ", " + callback_var + ")" + Blockly.Python.STR_NEW_LINE;
+  setup += Blockly.Python.STR_DELIMITER;
 
-  var usage = msg_var + "\n"
+  var usage = msg_var + Blockly.Python.STR_NEW_LINE
 
-  return [[usage, libs, setup].join(Blockly.Python.STRING_DELIMITER), Blockly.Python.ORDER_ATOMIC];
+  var code = [usage, libs, setup].join(Blockly.Python.STR_DELIMITER);
+
+  return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python['ros_logging'] = function(block) {
@@ -144,7 +151,7 @@ Blockly.Python['ros_logging'] = function(block) {
       break;
   }
   code += "(" + message + ")\n"
-  code += Blockly.Python.STRING_DELIMITER
+  code += Blockly.Python.STR_DELIMITER
 
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
